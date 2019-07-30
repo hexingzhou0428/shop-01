@@ -21,7 +21,7 @@
         <el-form-item
           label="密码"
           prop="password"
-          status-icon='false'
+          status-icon="false"
         >
           <el-input v-model="loginFrom.password"></el-input>
         </el-form-item>
@@ -48,8 +48,8 @@ export default {
   data () {
     return {
       loginFrom: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
 
       },
       rules: {
@@ -76,8 +76,10 @@ export default {
           return
         }
         axios.post('http://localhost:8888/api/private/v1/login', this.loginFrom).then(res => {
-          // console.log(res)
+          console.log(res)
           if (res.data.meta.status === 200) {
+            // 保存token令牌到本地
+            localStorage.setItem('token', res.data.data.token)
             this.$message({
               message: '登录成功',
               type: 'success',
