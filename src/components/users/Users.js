@@ -1,3 +1,4 @@
+/* eslint-disable */
 // import axios from 'axios'
 export default {
   data () {
@@ -11,14 +12,23 @@ export default {
       pagenum: 1,
       // input3绑定的值
       input3: '',
-      // 是否显示对话框
+      // 是否显示添加用户对话框
       dialogAddUserVisible: false,
+      // 是否显示编辑用户对话框
+      editUserFormVisible: false,
       // 表单数据
       addUserForm: {
         username: '',
         password: '',
         email: '',
         mobile: ''
+      },
+      // 编辑表单数据
+      editUserForm: {
+        username: '',
+        email: '',
+        mobile: '',
+        id: 0
       },
       rules: {
         username: [
@@ -47,8 +57,8 @@ export default {
   methods: {
     // 更改状态
     changeState (row) {
-      const { id, mgState } = row
-      this.$axios.put(`users/${id}/state/${mgState}`
+      const { id, mg_state } = row
+      this.$axios.put(`users/${id}/state/${mg_state}`
         // this.$axios.put(`users/${id}/state/${mg_state}`, null, {
         // headers: {
         //   Authorization: localStorage.getItem('token')
@@ -109,9 +119,38 @@ export default {
         }
       })
     },
-    // 点击框出现
+    // 添加用户点击框出现
     showAddUserDialog () {
       this.dialogAddUserVisible = true
+    },
+    //编辑用户点击框出现
+    showEditForm (row) {
+      this.editUserFormVisible = true
+      console.log(row);
+      const { username, email, mobile, id } = row
+      this.editUserForm.username = username;
+      this.editUserForm.email = email;
+      this.editUserForm.mobile = mobile;
+      this.editUserForm.id = id;
+    },
+    // 编辑用户
+    async editUser () {
+      const { email, mobile, id } = this.editUserForm
+      let res = await this.$axios.put(`users/${id}`, {
+        email,
+        mobile
+      })
+      console.log(res);
+      if (res.data.meta.status === 200) {
+        this.editUserFormVisible = false
+        this.$message({
+          message: '编辑成功',
+          type: 'success',
+          duration: 800
+        })
+        this.getUsersData(this.pagenum)
+
+      }
     },
     // 点击搜索功能
     search () {
