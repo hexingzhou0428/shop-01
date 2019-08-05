@@ -64,7 +64,7 @@ export default {
     // 获取角色数据
     async  getRolesData () {
       let res = await this.$axios.get('roles')
-      console.log(res)
+      // console.log(res)
       if (res.data.meta.status === 200) {
         this.roleData = res.data.data
       }

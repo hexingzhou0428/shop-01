@@ -59,7 +59,7 @@ export default {
   methods: {
     async getRightsData () {
       let res = await this.$axios.get('rights/list')
-      console.log(res)
+      // console.log(res)
       if (res.data.meta.status === 200) {
         this.rightsData = res.data.data
       }

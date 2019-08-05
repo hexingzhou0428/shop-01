@@ -1,3 +1,4 @@
+
 /* eslint-disable */
 // import axios from 'axios'
 export default {
@@ -16,6 +17,8 @@ export default {
       dialogAddUserVisible: false,
       // 是否显示编辑用户对话框
       editUserFormVisible: false,
+      // 是否显示分配角色对话框
+      dialogRoleFormVisible: false,
       // 表单数据
       addUserForm: {
         username: '',
@@ -30,6 +33,14 @@ export default {
         mobile: '',
         id: 0
       },
+      // 分配角色数据
+      roleForm: {
+        username: 'gouzi',
+        id: 0,
+        rid: ''
+      },
+      // 角色列表数组
+      rolesData: [],
       rules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -53,8 +64,45 @@ export default {
   // 进入就要得导数据 写在钩子函数中
   created () {
     this.getUsersData()
+    this.getRolesData()
   },
   methods: {
+    //分配觉色点击确定发送请求
+    async assRole () {
+      let { id, rid } = this.roleForm
+      let res = await this.$axios.put(`users/${id}/role`, {
+        rid
+      })
+      // console.log(res)
+      if (res.data.meta.status === 200) {
+        this.dialogRoleFormVisible = false
+        this.$message({
+          message: '觉色设置成功',
+          type: 'success',
+          duration: 800
+
+        })
+        // 刷新
+        this.getUsersData(this.pagenum, this.input3)
+      }
+    },
+    // 获取所有的角色信息
+    async getRolesData () {
+      let res = await this.$axios.get('roles')
+      // console.log(res)
+      this.rolesData = res.data.data
+    },
+    // 分配角色框点击显现
+    async dialogRoleForm (row) {
+      this.dialogRoleFormVisible = true
+      // console.log(row)
+      let { id, username } = row
+      this.roleForm.id = id
+      this.roleForm.username = username
+      let res = await this.$axios.get(`users/${id}`)
+      console.log(res)
+      this.roleForm.rid = res.data.data.rid == -1 ? '' : res.data.data.rid
+    },
     // 更改状态
     changeState (row) {
       const { id, mg_state } = row
@@ -180,6 +228,7 @@ export default {
         this.total = res.data.data.total
         this.pagenum = res.data.data.pagenum
       })
-    }
+    },
+
   }
 }

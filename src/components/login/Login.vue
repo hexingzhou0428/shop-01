@@ -75,7 +75,7 @@ export default {
           return
         }
         this.$axios.post('login', this.loginFrom).then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.data.meta.status === 200) {
             // 保存token令牌到本地
             localStorage.setItem('token', res.data.data.token)

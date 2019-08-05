@@ -32,48 +32,21 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-submenu index="1">
+          <el-submenu
+            :index="item1.id+''"
+            v-for='item1 in menusData'
+            :key='item1.id'
+          >
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <span>{{item1.authName}}</span>
             </template>
-            <el-menu-item index="/users">用户列表</el-menu-item>
+            <el-menu-item
+              v-for='item2 in item1.children'
+              :key='item2.id'
+              :index=" '/'+ item2.path"
+            >{{item2.authName}}</el-menu-item>
           </el-submenu>
-
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>权限管理</span>
-            </template>
-            <el-menu-item index="/roles">角色列表</el-menu-item>
-            <el-menu-item index="/rights">权限列表</el-menu-item>
-          </el-submenu>
-
-          <!-- <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>商品管理</span>
-            </template>
-            <el-menu-item index="3-1">商品列表</el-menu-item>
-            <el-menu-item index="3-2">分类参数</el-menu-item>
-            <el-menu-item index="3-3">商品分类</el-menu-item>
-          </el-submenu>
-
-          <el-submenu index="4">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>订单管理</span>
-            </template>
-            <el-menu-item index="4-1">订单列表</el-menu-item>
-          </el-submenu>
-
-          <el-submenu index="5">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>数据统计</span>
-            </template>
-            <el-menu-item index="5-1">数据列表</el-menu-item>
-          </el-submenu> -->
 
         </el-menu>
       </el-aside>
@@ -88,9 +61,23 @@
 
 <script>
 export default {
+  data () {
+    return {
+      menusData: []
+    }
+  },
+  created () {
+    this.getRightsData()
+  },
   methods: {
+    // 进入页面渲染对应用户的对应权限
+    async getRightsData () {
+      let res = await this.$axios.get('menus')
+      // console.log(res)
+      this.menusData = res.data.data
+    },
     handleOpen (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath)
